@@ -54,6 +54,12 @@ public struct GradientColors {
     public static let prplPink = GradientColor(start: Color(hexString: "BC05AF"), end: Color(hexString: "FF1378"))
     public static let prplNeon = GradientColor(start: Color(hexString: "FE019A"), end: Color(hexString: "FE0BF4"))
     public static let orngPink = GradientColor(start: Color(hexString: "FF8E2D"), end: Color(hexString: "FF4E7A"))
+    
+    public static var all: [GradientColor] {
+        get {
+            return [orange, blue, green, blu, bluPurpl, purple, prplPink, prplNeon, orngPink]
+        }
+    }
 }
 
 public struct Styles {
@@ -186,7 +192,11 @@ public class ChartStyle {
 public class ChartData: ObservableObject, Identifiable {
     @Published var points: [(String,Double)]
     var valuesGiven: Bool = false
-    var ID = UUID()
+    var index = 0
+    
+    public var id: Int {
+        get { return index }
+    }
     
     public init<N: BinaryFloatingPoint>(points:[N]) {
         self.points = points.map{("", Double($0))}
@@ -216,14 +226,16 @@ public class ChartData: ObservableObject, Identifiable {
 public class MultiLineChartData: ChartData {
     var gradient: GradientColor
     
-    public init<N: BinaryFloatingPoint>(points:[N], gradient: GradientColor) {
+    public init<N: BinaryFloatingPoint>(points:[N], gradient: GradientColor, index: Int) {
         self.gradient = gradient
         super.init(points: points)
+        self.index = index
     }
     
-    public init<N: BinaryFloatingPoint>(points:[N], color: Color) {
+    public init<N: BinaryFloatingPoint>(points:[N], color: Color, index: Int) {
         self.gradient = GradientColor(start: color, end: color)
         super.init(points: points)
+        self.index = index
     }
     
     public func getGradient() -> GradientColor {
